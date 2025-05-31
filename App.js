@@ -5,30 +5,37 @@ import { DrawerActions, NavigationContainer, useNavigation } from '@react-naviga
 import { Dashboard } from './screens/Dashboard';
 import { Settings } from './screens/Settings';
 import { createStackNavigator } from '@react-navigation/stack';
+import { CustomDrawer } from './screens/CustomDrawer';
+import { LoginScreen } from './screens/LoginScreen';
+import { RegisterScreen } from './screens/RegisterScreen';
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
 
-const StackNavigation = (name, component) => {
+const StackNavigation = (name, component, hshown) => {
+  const headershown =hshown == undefined?  true : false 
   
-  return ({navigation})=>(<Stack.Navigator screenOptions={{
-        headerLeft: ()=>{
-          return (
-            <Text style={{marginHorizontal: 20}} onPress={()=>{
-              return navigation.dispatch(DrawerActions.openDrawer())
-            }}>☰</Text>
-          )
-        }
-        }}>
-    <Stack.Screen name={name} component={component}/>
+  return ({ navigation }) => (<Stack.Navigator screenOptions={{
+    headerShown:headershown ,
+    headerLeft: () => {
+      return (
+        <Text style={{ paddingVertical: 10, paddingHorizontal: 20, }} onPress={() => {
+          return navigation.dispatch(DrawerActions.openDrawer())
+        }}>☰</Text>
+      )
+    }
+  }}>
+    <Stack.Screen name={name} component={component} />
   </Stack.Navigator>)
 }
 
 export default function App() {
-  
+
   return (
     <NavigationContainer>
-      <Drawer.Navigator screenOptions={{ headerShown:false}}>
+      <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />} screenOptions={{ headerShown: false }}>
+        <Drawer.Screen name='register' component={StackNavigation("register", RegisterScreen, false)} />
+        <Drawer.Screen name='login' component={StackNavigation("login", LoginScreen, false)} />
         <Drawer.Screen name="dashboard" component={StackNavigation("dashboard", Dashboard)} />
         <Drawer.Screen name="settings" component={StackNavigation("settings", Settings)} />
       </Drawer.Navigator>
