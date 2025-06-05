@@ -11,8 +11,8 @@ export const CustomDrawer = ({navigation}) => {
 	async function handleSignout() {
 		const data = await AsyncStorage.removeItem("authUser")
 		setTimeout(() => {
-			navigation.navigate("dashboard")
-		}, 500)
+			navigation.navigate("register");
+		}, 200)
 		alert("logged out successfully done!")
 	}
 	return (

@@ -19,7 +19,7 @@ const DrawerNavigation = ()=>{
     <Drawer.Navigator drawerContent={(props)=> <CustomDrawer {...props}/>} >
           <Drawer.Screen name='dashboard' component={Dashboard}/>
           <Drawer.Screen name='settings' component={Settings}/>
-          <Drawer.Screen name="register" component={StackNavigation}/>
+          <Drawer.Screen name="register" component={StackNavigation} options={{headerShown: false}}/>
         </Drawer.Navigator>
   )
 }
