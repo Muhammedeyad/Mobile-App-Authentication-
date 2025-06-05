@@ -1,27 +1,37 @@
 const { Text, StyleSheet, View, Image, TextInput, Button, ScrollView, KeyboardAvoidingView } = require("react-native")
 
+import { useState } from 'react'
 import loginimage from './../assets/loginimage.png'
-export const RegisterScreen = () => {
+import { useRegisterHook } from '../hooks/useRegisterHook'
+export const RegisterScreen = ({navigation}) => {
+    const [user,setUser ] = useState({
+        username: "",
+        password: "",
+        confirmPassword: "",
+    })
+
+    const {useRegister} = useRegisterHook()
+    const handleRegister =async ()=>{
+        await useRegister(user, navigation)
+    }
+
     return (
         <ScrollView>
         <KeyboardAvoidingView>
-        
-
         <View style={styles.container}>
-            
             <View style={styles.image}>
                 <Image style={{ width: 200, height: 200 }} source={loginimage} />
             </View>
-            <Text style={{ paddingHorizontal: 20, fontSize: 23, fontWeight: "bold", color: "purple" }}>Register !!! </Text>
+            <Text style={{ paddingHorizontal: 20, fontFamily: "mono", fontSize: 19, fontWeight: "bold", color: "blue", marginBottom: 10 }}>Register Now !!! </Text>
             <View style={styles.inputContainer}>
-                <TextInput placeholder="Enter Your Username" style={styles.input} />
-                <TextInput placeholder="Enter Your Password" style={styles.input} secureTextEntry={true}/>
-                <TextInput placeholder="Enter Your Confirm Password" style={styles.input} secureTextEntry={true} />
+                <TextInput placeholder="Enter Your Username" style={styles.input} onChangeText={(text)=> setUser({...user, username: text})} />
+                <TextInput placeholder="Enter Your Password" style={styles.input} secureTextEntry={true} onChangeText={(text)=> setUser({...user, password: text})}/>
+                <TextInput placeholder="Enter Your Confirm Password" style={styles.input} secureTextEntry={true}  onChangeText={(text)=> setUser({...user, confirmPassword: text})}/>
             </View>
             <View style={styles.buttonContainer}>
-                <Text title='Log in' style={styles.loginbtn}>Log in</Text>
+                <Text title='Log in' style={styles.loginbtn} onPress={()=>handleRegister()}>Register</Text>
             </View>
-            <Text style={styles.text}>Already have an account, login here!</Text>
+            <Text style={styles.text} onPress={()=> navigation.navigate("login")}>Already have an account, login here!</Text>
         </View>
         
         </KeyboardAvoidingView>
@@ -42,8 +52,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     input: {
-        borderWidth: 3,
-        borderColor: "violet",
+        borderWidth: 1,
+        borderColor: "gray",
         paddingVertical: 14,
         paddingHorizontal: 20,
         borderRadius: 100,
@@ -63,7 +73,7 @@ const styles = StyleSheet.create({
     },
     loginbtn: {
         marginVertical: 20,
-        backgroundColor: "violet",
+        backgroundColor: "blue",
         color: "white",
         fontWeight: "bold",
         paddingVertical:10,
@@ -71,14 +81,14 @@ const styles = StyleSheet.create({
         borderRadius:100,
         width: 200,
         textAlign: "center",
-        fontSize: 18
-    }  ,
+        fontSize: 13
+    } ,
     text: {
         marginVertical: 20,
         textAlign: 'center',
         textDecoration: "underline",
         color: 'blue',
-        fontWeight: 'bold',
+        fontWeight: 'thin',
         textDecorationLine: "underline"
     }
 })

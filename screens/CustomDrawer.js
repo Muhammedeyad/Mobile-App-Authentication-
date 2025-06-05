@@ -1,12 +1,20 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Text, StyleSheet, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
-export const CustomDrawer = ({ navigation }) => {
+export const CustomDrawer = ({navigation}) => {
 	const listItems = [
 		{ itemName: "dashboard", navigateTo: "dashboard" },
 		{ itemName: "settings", navigateTo: "settings" },
-		{ itemName: "login", navigateTo: 'login'},
-		{ itemName: "register", navigateTo: 'register'},
 	]
+
+	async function handleSignout() {
+		const data = await AsyncStorage.removeItem("authUser")
+		setTimeout(() => {
+			navigation.navigate("dashboard")
+		}, 500)
+		alert("logged out successfully done!")
+	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.userInfo}>
@@ -16,10 +24,11 @@ export const CustomDrawer = ({ navigation }) => {
 			<View style={styles.listItems}>
 				{
 					listItems.map((item, index) => (
-						<Text style={styles.listItem} onPress={() => navigation.navigate(item.navigateTo)}>{item.itemName}</Text>
+						<Text key={index} style={styles.listItem} onPress={() => navigation.navigate(item.navigateTo)}>{item.itemName}</Text>
 					))
 				}
 			</View>
+			<Text style={styles.listItem} onPress={() => handleSignout()}>Sign out</Text>
 		</View>
 	)
 }

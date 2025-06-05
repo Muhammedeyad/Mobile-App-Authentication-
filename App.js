@@ -8,37 +8,50 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { CustomDrawer } from './screens/CustomDrawer';
 import { LoginScreen } from './screens/LoginScreen';
 import { RegisterScreen } from './screens/RegisterScreen';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
 
-const StackNavigation = (name, component, hshown) => {
-  const headershown =hshown == undefined?  true : false 
-  
-  return ({ navigation }) => (<Stack.Navigator screenOptions={{
-    headerShown:headershown ,
-    headerLeft: () => {
-      return (
-        <Text style={{ paddingVertical: 10, paddingHorizontal: 20, }} onPress={() => {
-          return navigation.dispatch(DrawerActions.openDrawer())
-        }}>☰</Text>
-      )
-    }
-  }}>
-    <Stack.Screen name={name} component={component} />
-  </Stack.Navigator>)
+const DrawerNavigation = ()=>{
+  return (
+    <Drawer.Navigator drawerContent={(props)=> <CustomDrawer {...props}/>} >
+          <Drawer.Screen name='dashboard' component={Dashboard}/>
+          <Drawer.Screen name='settings' component={Settings}/>
+          <Drawer.Screen name="register" component={StackNavigation}/>
+        </Drawer.Navigator>
+  )
+}
+
+const StackNavigation = ()=>{
+  return (
+    <Stack.Navigator screenOptions={{
+      headerShown:false
+    }}>
+          <Stack.Screen name='register' component={RegisterScreen}/>
+          <Stack.Screen name='login' component={LoginScreen}/>
+          <Stack.Screen name='dashboard' component={DrawerNavigation}/>
+        </Stack.Navigator>
+  )
 }
 
 export default function App() {
-
+  const [isAuth, setIsAuth] = useState()
+  useEffect(() => {
+    async function gettingAuthUser() {
+      const data = await AsyncStorage.getItem("authUser")
+      if (data == "" || null) {
+        setIsAuth(false)
+        return
+      }
+      setIsAuth(data)
+    }
+    gettingAuthUser()
+  }, [])
   return (
     <NavigationContainer>
-      <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />} screenOptions={{ headerShown: false }}>
-        <Drawer.Screen name='register' component={StackNavigation("register", RegisterScreen, false)} />
-        <Drawer.Screen name='login' component={StackNavigation("login", LoginScreen, false)} />
-        <Drawer.Screen name="dashboard" component={StackNavigation("dashboard", Dashboard)} />
-        <Drawer.Screen name="settings" component={StackNavigation("settings", Settings)} />
-      </Drawer.Navigator>
+      { !isAuth ? <StackNavigation/> : <DrawerNavigation/> }
     </NavigationContainer>
   );
 }
